@@ -33,7 +33,7 @@
       pkgs = pkgsFor.${system};
 
       legacyPkgs = nixpkgs.legacyPackages.${system};
-      toolchain = fenix.packages.${system}.minimal.toolchain;
+      toolchain = fenix.packages.${system}.stable.toolchain;
 
       manifest = (nixpkgs.lib.importTOML ./Cargo.toml).package;
 
@@ -44,30 +44,38 @@
       binaryName = manifest.name;
     in rec {
       # compile the active rust project
-      default =
-        (legacyPkgs.makeRustPlatform {
+      # default =
+      #   (legacyPkgs.makeRustPlatform {
+      #     cargo = toolchain;
+      #     rustc = toolchain;
+      #   })
+      #   .buildRustPackage {
+      #     # change the manifest.name to the binary file
+      #     # if you're binary file does not match the
+      #     # name of the library
+      #     pname = binaryName;
+      #     version = manifest.version;
+
+      #     src = pkgs.lib.cleanSource ./.;
+      #     cargoLock.lockFile = ./Cargo.lock;
+      #     cargoLock.allowBuiltinFetchGit = true;
+
+      #     buildInputs =
+      #       [
+      #         pkgs.llvmPackages_15.bintools # use lld for fast linking
+      #       ]
+      #       ++ nixpkgs.lib.optionals pkgs.stdenv.isDarwin [
+      #         pkgs.darwin.apple_sdk.frameworks.CoreServices
+      #         pkgs.libiconv
+      #       ];
+      #   };
+      default =  (naersk.lib.${system}.override {
           cargo = toolchain;
           rustc = toolchain;
         })
-        .buildRustPackage {
-          # change the manifest.name to the binary file
-          # if you're binary file does not match the
-          # name of the library
-          pname = binaryName;
-          version = manifest.version;
-
+        .buildPackage {
+          buildInputs = [pkgs.llvmPackages_15.bintools];
           src = pkgs.lib.cleanSource ./.;
-          cargoLock.lockFile = ./Cargo.lock;
-          cargoLock.allowBuiltinFetchGit = true;
-
-          buildInputs =
-            [
-              pkgs.llvmPackages_15.bintools # use lld for fast linking
-            ]
-            ++ nixpkgs.lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.darwin.apple_sdk.frameworks.CoreServices
-              pkgs.libiconv
-            ];
         };
 
       app-arm-linux = let
