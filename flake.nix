@@ -12,7 +12,7 @@
       typst-math = {
         path = ./typst-math;
         description = ''Instantiate a typst instance with my math template, and a (mostly) configured VSCodium.'';
-      }
+      };
     };
   };
 }
