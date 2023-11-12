@@ -69,7 +69,8 @@
       #         pkgs.libiconv
       #       ];
       #   };
-      default =  (naersk.lib.${system}.override {
+      default =
+        (naersk.lib.${system}.override {
           cargo = toolchain;
           rustc = toolchain;
         })
@@ -124,7 +125,7 @@
             "rustfmt"
             "clippy"
           ])
-          fenixPkgs.rust-analyzer
+          fenixPkgs.stable.rust-analyzer
           pkgs.llvmPackages_15.bintools # we want lld for fast linking
         ];
 
