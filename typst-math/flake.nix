@@ -2,7 +2,7 @@
   description = "An environment for building a compiling typst documents with vscode, typst, and typst-lsp";
 
   # Nixpkgs / NixOS version to use.
-  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs";
 
   outputs = {
     self,
