@@ -32,7 +32,6 @@
     packages = forAllSystems (system: let
       pkgs = pkgsFor.${system};
 
-      legacyPkgs = nixpkgs.legacyPackages.${system};
       toolchain = fenix.packages.${system}.stable.toolchain;
 
       manifest = (nixpkgs.lib.importTOML ./Cargo.toml).package;
@@ -44,31 +43,6 @@
       binaryName = manifest.name;
     in rec {
       # compile the active rust project
-      # default =
-      #   (legacyPkgs.makeRustPlatform {
-      #     cargo = toolchain;
-      #     rustc = toolchain;
-      #   })
-      #   .buildRustPackage {
-      #     # change the manifest.name to the binary file
-      #     # if you're binary file does not match the
-      #     # name of the library
-      #     pname = binaryName;
-      #     version = manifest.version;
-
-      #     src = pkgs.lib.cleanSource ./.;
-      #     cargoLock.lockFile = ./Cargo.lock;
-      #     cargoLock.allowBuiltinFetchGit = true;
-
-      #     buildInputs =
-      #       [
-      #         pkgs.llvmPackages_15.bintools # use lld for fast linking
-      #       ]
-      #       ++ nixpkgs.lib.optionals pkgs.stdenv.isDarwin [
-      #         pkgs.darwin.apple_sdk.frameworks.CoreServices
-      #         pkgs.libiconv
-      #       ];
-      #   };
       default =
         (naersk.lib.${system}.override {
           cargo = toolchain;
@@ -116,7 +90,7 @@
       system: let
         pkgs = pkgsFor.${system};
         fenixPkgs = fenix.packages.${system};
-        target = "aarch64-unknown-linux-musl";
+        cross-target = "aarch64-unknown-linux-musl";
 
         basePkgs = [
           (fenixPkgs.stable.withComponents [
@@ -125,8 +99,6 @@
             "rustfmt"
             "clippy"
           ])
-          fenixPkgs.stable.rust-analyzer
-          pkgs.llvmPackages_15.bintools # we want lld for fast linking
         ];
 
         buildInputs = nixpkgs.lib.optionals pkgs.stdenv.isDarwin [
@@ -134,12 +106,12 @@
           pkgs.libiconv
         ];
       in {
-        default = pkgs.mkShell {
+        ci = pkgs.mkShell {
           name = "rust-devshell";
           packages = basePkgs;
           inherit buildInputs;
         };
-        nice = pkgs.mkShell {
+        default = pkgs.mkShell {
           name = "rust-devshell-fancy";
           packages = basePkgs ++ (with pkgs; [just starship]);
           inherit buildInputs;
@@ -158,7 +130,7 @@
                   stable.cargo
                   stable.clippy
                   stable.rustfmt
-                  targets.${target}.stable.rust-std
+                  targets.${cross-target}.stable.rust-std
                 ])
               fenixPkgs.rust-analyzer
             ];
@@ -166,7 +138,7 @@
 
           shellHook = ''
             eval "$(starship init bash)"
-            export BUILD_TARGET="${target}"
+            export BUILD_TARGET="${cross-target}"
           '';
         };
       }
