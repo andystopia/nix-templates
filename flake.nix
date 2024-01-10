@@ -13,6 +13,14 @@
         path = ./typst-math;
         description = ''Instantiate a typst instance with my math template, and a (mostly) configured VSCodium.'';
       };
+      empty-dev-shell = {
+        path = ./empty-dev-shell;
+        description = ''
+        Easily fillable dev-shell
+        that will allow the user to quickly define shell dependencies they
+        want.        
+      '';
+      };
     };
   };
 }
