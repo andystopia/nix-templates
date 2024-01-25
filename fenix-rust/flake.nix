@@ -16,7 +16,7 @@
       url = "github:nix-community/naersk";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs.url = "nixpkgs/nixos-23.05";
+    nixpkgs.url = "nixpkgs/nixos-23.11";
   };
 
   outputs = {
@@ -97,7 +97,9 @@
             "cargo"
             "rustc"
             "rustfmt"
+            "rust-analyzer"
             "clippy"
+            "rust-std"
           ])
         ];
 
@@ -113,7 +115,7 @@
         };
         default = pkgs.mkShell {
           name = "rust-devshell-fancy";
-          packages = basePkgs ++ (with pkgs; [just starship]);
+          packages = basePkgs ++ (with pkgs; [just starship llvmPackages_15.bintools]);
           inherit buildInputs;
           shellHook = ''
             eval "$(starship init bash)"

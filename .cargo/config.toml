@@ -1,0 +1,9 @@
+# idea is that we want rust-analyzer
+# to not interfere with cargo check.
+[profile.rust-analyzer]
+inherits = "dev"
+
+[build]
+rustflags = ["-Clink-arg=-fuse-ld=lld"]
+
+
