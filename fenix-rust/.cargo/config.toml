@@ -1,1 +1,6 @@
+[profile.rust-analyzer]
+inherits = "dev"
+
+[build]
+rustflags = ["-Clink-arg=-fuse-ld=lld"]
 
