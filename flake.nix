@@ -21,6 +21,14 @@
         want.        
       '';
       };
+
+      basic-r = {
+        path = ./basic-r;
+        description = ''
+          Have a ready-to-go R environment, with the 
+          ability to knit using Nix build.
+        '';
+      };
     };
   };
 }
