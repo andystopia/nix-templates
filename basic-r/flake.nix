@@ -39,7 +39,7 @@
     # at the very least local development packages
     uses = (
       pkgs:
-        (with pkgs; [gnumake starship R pandoc just texlive.combined.scheme-full])
+        (with pkgs; [gnumake starship R pandoc ])
         ++ (usesRPackages pkgs)
     );
   in {
@@ -101,6 +101,31 @@
 
             # you will need rstudio installed for this.
             alias rstudio='/Applications/RStudio.app/Contents/MacOS/RStudio'
+          '';
+        };
+        mk-proj = pkgs.mkShell {
+          buildInputs = buildInputs ++ (with pkgs.rPackages; [rstudioapi usethis]);
+
+          shellHook = ''
+
+          ${pkgs.R}/bin/R --quiet -e "usethis::create_project('.', open=FALSE, rstudio=TRUE)"
+          exit 0;
+          '';
+        };
+        rstudio = pkgs.mkShell {
+          buildInputs = buildInputs ++ (with pkgs.rPackages; [rstudioapi usethis]);
+
+          shellHook = ''
+            export RSTUDIO_WHICH_R=${pkgs.R}/bin/R
+            export RSTUDIO_PANDOC=${pkgs.pandoc}/bin/pandoc
+
+            PROJ_FILE=''${PWD##*/}.Rproj
+            if ! test -f $PROJ_FILE; then
+              ${pkgs.R}/bin/R --quiet -e "usethis::create_project('.', open=FALSE, rstudio=TRUE)"
+            fi         
+
+            /Applications/RStudio.app/Contents/MacOS/RStudio $PROJ_FILE &
+            exit
           '';
         };
       })
