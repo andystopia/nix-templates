@@ -29,6 +29,14 @@
           ability to knit using Nix build.
         '';
       };
+
+      # TODO: implement running with nix run 
+      haskell-94 = {
+        path = ./haskell-94;
+        description = ''
+          A ready to go working cabal and hls installation
+        '';
+      };
     };
   };
 }
