@@ -113,7 +113,7 @@
           '';
         };
         rstudio = pkgs.mkShell {
-          buildInputs = buildInputs ++ (with pkgs.rPackages; [rstudioapi usethis]);
+          buildInputs = buildInputs ++ (with pkgs.rPackages; [rstudioapi usethis miniUI styler]);
 
           shellHook = ''
             export RSTUDIO_WHICH_R=${pkgs.R}/bin/R
