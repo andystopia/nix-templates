@@ -2,7 +2,7 @@
   description = "A basic haskell cabal template dev env with hls";
 
   # Nixpkgs / NixOS version to use.
-  inputs.nixpkgs.url = "nixpkgs/nixos-23.11";
+  inputs.nixpkgs.url = "nixpkgs/nixos-24.05";
 
   outputs = {
     self,
@@ -16,6 +16,8 @@
 
     # Nixpkgs instantiated for supported system types.
     nixpkgsFor = forAllSystems (system: import nixpkgs {inherit system;});
+
+    ghcMajorMinor = "94";
   in {
     # Provide some binary packages for selected system types.
     packages = forAllSystems (system: let
@@ -32,13 +34,13 @@
           starship
           # put other package below
           cabal-install
-          haskell.compiler.ghc94
+          (haskell.compiler."ghc${ghcMajorMinor}")
           haskellPackages.implicit-hie
         ];
 
         nativeBuildInputs = with pkgs; [
-          haskell.compiler.ghc94
-          haskell-language-server
+          haskell.compiler."ghc${ghcMajorMinor}"
+          (haskell-language-server.override {supportedGhcVersions = ["${ghcMajorMinor}"];})
         ];
 
         shellHook = "
