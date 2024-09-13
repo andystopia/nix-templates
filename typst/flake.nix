@@ -28,7 +28,7 @@
         name = "atkinson";
         # https://brailleinstitute.org/wp-content/uploads/atkinson-hyperlegible-font/Atkinson-Hyperlegible-Font-Print-and-Web-2020-0514.zip
         src = builtins.fetchurl {
-          url = "https://brailleinstitute.org/wp-content/uploads/atkinson-hyperlegible-font/Atkinson-Hyperlegible-Font-Print-and-Web-2020-0514.zip";
+          url = "https://www.brailleinstitute.org/atkinson-hyperlegible-font/Atkinson-Hyperlegible-Font-Print-and-Web-2020-0514.zip";
           sha256 = "sha256:1qskrsxlck1b3g4sjphmyq723fjspw3qm58yg59q5p6s7pana6ly";
         };
 
